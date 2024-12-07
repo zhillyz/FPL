@@ -8,12 +8,14 @@ class FPLData():
     difficulty_url = 'https://fantasy.premierleague.com/api/fixtures?future=1'
     
     def __init__( self ):
-        self.events = None
-        self.players = {}
+        self.data = self.getPlayerAndTeamData()
+        self.events = self.data['events']
+        self.players = self.cleanPlayerData()#self.data['elements']
         self.teams = None
+        self.fdr = self.getDifficultyData()
         
     
-    def getPlayerData( self ):
+    def getPlayerAndTeamData( self ):
         player_bytes_dict = self.queryAPI(self.player_url)
         return json.loads(player_bytes_dict.decode('utf-8'))
         
@@ -21,13 +23,14 @@ class FPLData():
         difficulty_bytes_dict = self.queryAPI(self.difficulty_url)
         return json.loads(difficulty_bytes_dict.decode('utf-8'))
         
-    def cleanData( self ):
-        self.events = data['events']
-        list_player_dicts = [player for player in data['elements'] if player['minutes'] > 0]
-        player_pos_map = data['element_types']
+    def cleanPlayerData( self ):
+        list_player_dicts = [player for player in self.data['elements'] if player['minutes'] > 0]
+        players = {}
         for index,player_dict in enumerate(list_player_dicts):
-            self.players.update({str(player_dict['code']):player_dict})
-        self.player_positions = None      
+            players.update({player_dict['id']:player_dict})
+        return players
+        # self.player_positions = None      
+        # player_pos_map = data['element_types']
 
     def queryAPI( self, url ):
         results = requests.get(url)
