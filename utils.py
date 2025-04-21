@@ -263,6 +263,6 @@ def get_current_predictor_data(curr_gw=None):
         stats = get_raw_historic_player_stats_snap(date_map[curr_gw])
     players_df["num_fixtures"] = players_df.apply(lambda x: get_team_fixture_info(fixtures,curr_gw+1, curr_gw+1).get(x["team"],{}).get("num_fixtures",0),axis=1)
     players_df["total_fdr"] = players_df.apply(lambda x: get_team_fixture_info(fixtures,curr_gw+1, curr_gw+1).get(x["team"],{}).get("total_fdr",0), axis=1)
-    players_df["is_injured"] = players_df["status"].apply(lambda x: 1 if x in ["i", "s", "n", "u"] else 0)
+    players_df["is_injured"] = players_df["status"].apply(lambda x: 1 if x in ["i", "s", "n", "u","d"] else 0)
     players_df.loc[:,'horizon'] = 1
     return players_df
